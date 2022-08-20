@@ -9,6 +9,11 @@
 #define CLEAR 1
 
 Color color;
+Line line;
+
+// идентификаторы меню
+int widthMenu, shrinkMenu, mainMenu, colorMenu, BGcolorMenu, lineTypeMenu;
+int menuFlag = 0;           // статус меню
 
 void processMenuStatus(int status, int x, int y) {
 	if (status == GLUT_MENU_IN_USE) menuFlag = 1;
@@ -16,7 +21,6 @@ void processMenuStatus(int status, int x, int y) {
 }
  
 void processMainMenu(int option) {
- 
 	switch(option) {
 		case CLEAR: 
 		glClearColor(1, 1, 1, 1);
@@ -27,19 +31,12 @@ void processMainMenu(int option) {
  
 void processwidthMenu(int option) {
 	switch (option) {
-		case 1: line_width = 1; break;
-		case 2: line_width = 2; break;
-		case 3: line_width = 3; break;
-		case 4: line_width = 4; break;
-		case 5: line_width = 5; break;
-		case 6: line_width = 6; break;
-	}
-}
- 
-void processShrinkMenu(int option) {
-	switch (option) {
-		case SHRINK: shrink = 0.5f; break;
-		case NORMAL: shrink = 1.0f; break;
+		case 1: line.setWidth(1); break;
+		case 2: line.setWidth(2); break;
+		case 3: line.setWidth(3); break;
+		case 4: line.setWidth(4); break;
+		case 5: line.setWidth(5); break;
+		case 6: line.setWidth(6); break;
 	}
 }
  
@@ -99,19 +96,7 @@ void processBGColorMenu(int option) {
 }
 
 void processlineTypeMenu(int option) {
-    line_type = option;
-
-	// switch (option) {
-	// 	case STRING :
-	// 		line_type = STRING;
-	// 		break;
-    //     case DOTTED :
-	// 		line_type = DOTTED;
-	// 		break;
-	// 	case ERASER :
-	// 		line_type = ERASER;
-	// 		break;
-    // }
+    line.setType(option);
 }
 
 void menuPointsFunc() {
@@ -127,10 +112,6 @@ void menuPointsFunc() {
 }
 
 void createPopupMenus() {
-	shrinkMenu = glutCreateMenu(processShrinkMenu);
-	glutAddMenuEntry("Shrink", SHRINK);
-	glutAddMenuEntry("Normal", NORMAL);
-
 	widthMenu = glutCreateMenu(processwidthMenu);
 	glutAddMenuEntry(" 1  ", 1);
 	glutAddMenuEntry(" 2  ", 2);
@@ -157,7 +138,6 @@ void createPopupMenus() {
 	glutAddSubMenu("Line Color", colorMenu);
 	glutAddSubMenu("Background Color", BGcolorMenu);
     glutAddSubMenu("Line type", lineTypeMenu);
-	glutAddSubMenu("Shrink", shrinkMenu);
 	glutAddMenuEntry("Clear", CLEAR);
 
 	// прикрепить меню к правой кнопке
