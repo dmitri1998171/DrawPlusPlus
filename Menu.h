@@ -1,15 +1,17 @@
 #include <GLUT/glut.h>
 #include "Variables.h"
 
-#define BLACK 0
-#define RED 1
-#define GREEN 2
-#define BLUE 3
-#define ORANGE 4 
-#define YELLOW 5
-#define PURPLE 6
-#define WHITE 7
-#define INDIGO 8
+enum COLORS {
+	BLACK = 0,
+	RED,
+	GREEN,
+	BLUE,
+	ORANGE, 
+	YELLOW,
+	PURPLE,
+	WHITE,
+	INDIGO
+};
  
 #define SHRINK 1
 #define NORMAL 2
@@ -27,9 +29,9 @@ void processMenuStatus(int status, int x, int y) {
  
 void processMainMenu(int option) {
  
-	switch(option){
+	switch(option) {
 		case CLEAR: 
-		glClearColor(1,1,1,1);
+		glClearColor(1, 1, 1, 1);
 		glClear (GL_COLOR_BUFFER_BIT); 
 		break;
 	}
@@ -94,7 +96,7 @@ void processColorMenu(int option) {
 	}
 }
 
-void changeBgcolorFunc(float r, float g, float b, int k){
+void changeBgcolorFunc(float r, float g, float b, int k) {
 	glClearColor (r, g, b, 1.0);
 	glClear (GL_COLOR_BUFFER_BIT);
 	current_bgcolor = k;
@@ -146,30 +148,30 @@ void processlineTypeMenu(int option) {
     }
 }
 
-void menuPointsFunc(){
-	glutAddMenuEntry("Red",RED);
-	glutAddMenuEntry("Blue",BLUE);
-	glutAddMenuEntry("Green",GREEN);
-	glutAddMenuEntry("Orange",ORANGE);
-	glutAddMenuEntry("Indigo",INDIGO);
-	glutAddMenuEntry("Yellow",YELLOW);
-	glutAddMenuEntry("Purple",PURPLE);
-	glutAddMenuEntry("Black",BLACK);
-	glutAddMenuEntry("White",WHITE);
+void menuPointsFunc() {
+	glutAddMenuEntry("Red", RED);
+	glutAddMenuEntry("Blue", BLUE);
+	glutAddMenuEntry("Green", GREEN);
+	glutAddMenuEntry("Orange", ORANGE);
+	glutAddMenuEntry("Indigo", INDIGO);
+	glutAddMenuEntry("Yellow", YELLOW);
+	glutAddMenuEntry("Purple", PURPLE);
+	glutAddMenuEntry("Black", BLACK);
+	glutAddMenuEntry("White", WHITE);
 }
 
 void createPopupMenus() {
 		shrinkMenu = glutCreateMenu(processShrinkMenu);
-		glutAddMenuEntry("Shrink",SHRINK);
-		glutAddMenuEntry("Normal",NORMAL);
+		glutAddMenuEntry("Shrink", SHRINK);
+		glutAddMenuEntry("Normal", NORMAL);
 
 		widthMenu = glutCreateMenu(processwidthMenu);
-		glutAddMenuEntry(" 1  ",1);
-		glutAddMenuEntry(" 2  ",2);
-		glutAddMenuEntry(" 3  ",3);
-		glutAddMenuEntry(" 4  ",4);
-		glutAddMenuEntry(" 5  ",5);
-		glutAddMenuEntry(" 6  ",6);
+		glutAddMenuEntry(" 1  ", 1);
+		glutAddMenuEntry(" 2  ", 2);
+		glutAddMenuEntry(" 3  ", 3);
+		glutAddMenuEntry(" 4  ", 4);
+		glutAddMenuEntry(" 5  ", 5);
+		glutAddMenuEntry(" 6  ", 6);
 
 		colorMenu = glutCreateMenu(processColorMenu);
 		menuPointsFunc();
@@ -178,9 +180,9 @@ void createPopupMenus() {
 		menuPointsFunc();
 
         lineTypeMenu = glutCreateMenu(processlineTypeMenu);
-		glutAddMenuEntry("Normal",NORMAL_LINE_TYPE);
-        glutAddMenuEntry("String",STRING_LINE_TYPE);
-		glutAddMenuEntry("Eraser",ERASER_LINE_TYPE);
+		glutAddMenuEntry("Normal", NORMAL_LINE_TYPE);
+        glutAddMenuEntry("String", STRING_LINE_TYPE);
+		glutAddMenuEntry("Eraser", ERASER_LINE_TYPE);
 
 	mainMenu = glutCreateMenu(processMainMenu);
 	glutAddSubMenu("Width", widthMenu);

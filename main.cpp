@@ -21,14 +21,14 @@ void mouseMove(int x, int y) {
 	
 	y = WIDTH - y;
 
-	if(line_type == 1){
+	if(line_type == 1) {
 		glBegin(GL_LINE_STRIP);
-		glVertex2f(xx-1, -yy+1);
-		glVertex2f(X-1, -Y+1);
+		glVertex2f(xx - 1, -yy + 1);
+		glVertex2f(X - 1, -Y + 1);
 		glEnd();
 	}
 
-	if(line_type == 2){
+	if(line_type == 2) {
 		glBegin(GL_LINES);
             glVertex2f(xx, yy);
             glVertex2f(x, y);
@@ -40,20 +40,20 @@ void mouseMove(int x, int y) {
         yy = y;
 	}
 
-	if(line_type == 3){
-		if(current_bgcolor==100) red = 1; green = 0; blue = 0;
-		if(current_bgcolor==010) red = 0; green = 1; blue = 0;
-		if(current_bgcolor==001) red = 0; green = 0; blue = 1;
-		if(current_bgcolor==10505) red = 1; green = 0.5; blue = 0.5;
-		if(current_bgcolor==110) red = 1; green = 1; blue = 0;
-		if(current_bgcolor==101) red = 1; green = 0; blue = 1;
-		if(current_bgcolor==000) red = 0; green = 0; blue = 0;
-		if(current_bgcolor==111) red = 1; green = 1; blue = 1;
+	if(line_type == 3) {
+		if(current_bgcolor == 100) red = 1; green = 0; blue = 0;
+		if(current_bgcolor == 010) red = 0; green = 1; blue = 0;
+		if(current_bgcolor == 001) red = 0; green = 0; blue = 1;
+		if(current_bgcolor == 10505) red = 1; green = 0.5; blue = 0.5;
+		if(current_bgcolor == 110) red = 1; green = 1; blue = 0;
+		if(current_bgcolor == 101) red = 1; green = 0; blue = 1;
+		if(current_bgcolor == 000) red = 0; green = 0; blue = 0;
+		if(current_bgcolor == 111) red = 1; green = 1; blue = 1;
 
 		glColor3f(red, green, blue);
 		glBegin(GL_POINTS);
-		glVertex2f(xx-1, -yy+1);
-		glVertex2f(X-1, -Y+1);
+		glVertex2f(xx - 1, -yy + 1);
+		glVertex2f(X - 1, -Y + 1);
 		glEnd();
 	}
 }
@@ -64,7 +64,7 @@ void MouseFunc(int button, int state, int x, int y) {
 		xx=x; yy=y;
 }
 
-void keyboardFunc(unsigned char key, int x, int y){
+void keyboardFunc(unsigned char key, int x, int y) {
 	if(key == 27) exit(0);
 }
 
@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
 	glutMouseFunc(MouseFunc);
 	glutMotionFunc(mouseMove);
 
-	gluOrtho2D(0,WIDTH,0,HEIGHT);
+	gluOrtho2D(0, WIDTH, 0, HEIGHT);
 
 	// Основной цикл GLUT
 	glutMainLoop();
