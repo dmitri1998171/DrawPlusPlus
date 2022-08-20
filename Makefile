@@ -5,7 +5,7 @@ SRC_TEST := test.cpp
 CC := g++
 LIB_PATH := -L/System/Library/Frameworks
 LDFLAGS := -framework GLUT -framework OpenGL -framework Cocoa
-CFLAGS := -Wno-deprecated-declarations
+CFLAGS := -Wno-deprecated-declarations -g 
 
 all:
 	clear && $(CC) $(SRC) $(LIB_PATH) $(LDFLAGS) $(CFLAGS) -o $(BIN)

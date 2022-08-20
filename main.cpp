@@ -1,12 +1,5 @@
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
+#include "Variables.h"
 #include "Menu.h"
-
-#define WIDTH 500
-#define HEIGHT 500
-
-using namespace std;
 
 void renderScene(void) {
 	glFlush();
@@ -14,21 +7,14 @@ void renderScene(void) {
 }
 
 void mouseMove(int x, int y) {
-	glPointSize(point_size);
-	glColor3f(red, green, blue);
+	glLineWidth((GLfloat)line_width);
+
 	// glEnable(GL_LINE_STIPPLE); 		// разрешаем рисовать прерывистую линию
 	// glLineStipple(2, 58360);    		// устанавливаем маску
 	
 	y = WIDTH - y;
 
-	if(line_type == 1) {
-		glBegin(GL_LINE_STRIP);
-		glVertex2f(xx - 1, -yy + 1);
-		glVertex2f(X - 1, -Y + 1);
-		glEnd();
-	}
-
-	if(line_type == 2) {
+	if(line_type == STRING) {
 		glBegin(GL_LINES);
             glVertex2f(xx, yy);
             glVertex2f(x, y);
@@ -40,21 +26,31 @@ void mouseMove(int x, int y) {
         yy = y;
 	}
 
-	if(line_type == 3) {
-		if(current_bgcolor == 100) red = 1; green = 0; blue = 0;
-		if(current_bgcolor == 010) red = 0; green = 1; blue = 0;
-		if(current_bgcolor == 001) red = 0; green = 0; blue = 1;
-		if(current_bgcolor == 10505) red = 1; green = 0.5; blue = 0.5;
-		if(current_bgcolor == 110) red = 1; green = 1; blue = 0;
-		if(current_bgcolor == 101) red = 1; green = 0; blue = 1;
-		if(current_bgcolor == 000) red = 0; green = 0; blue = 0;
-		if(current_bgcolor == 111) red = 1; green = 1; blue = 1;
+	if(line_type == DOTTED) {
+		glBegin(GL_LINES);
+            glVertex2f(xx, yy);
+            glVertex2f(x, y);
+        glEnd();
 
-		glColor3f(red, green, blue);
-		glBegin(GL_POINTS);
-		glVertex2f(xx - 1, -yy + 1);
-		glVertex2f(X - 1, -Y + 1);
-		glEnd();
+        glFlush();
+
+        xx = x;
+        yy = y;
+	}
+
+	if(line_type == ERASER) {
+		color.SetLineColor(bg_color);
+		glLineWidth((GLfloat)eraser_width);
+				
+		glBegin(GL_LINES);
+            glVertex2f(xx, yy);
+            glVertex2f(x, y);
+        glEnd();
+
+        glFlush();
+
+        xx = x;
+        yy = y;
 	}
 }
 

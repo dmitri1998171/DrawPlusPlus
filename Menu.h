@@ -1,26 +1,14 @@
-#include <GLUT/glut.h>
-#include "Variables.h"
+#pragma once
 
-enum COLORS {
-	BLACK = 0,
-	RED,
-	GREEN,
-	BLUE,
-	ORANGE, 
-	YELLOW,
-	PURPLE,
-	WHITE,
-	INDIGO
-};
+#include "Variables.h"
+#include "Color.h"
  
 #define SHRINK 1
 #define NORMAL 2
 
-#define STRING_LINE_TYPE 1
-#define NORMAL_LINE_TYPE 2
-#define ERASER_LINE_TYPE 3
-
 #define CLEAR 1
+
+Color color;
 
 void processMenuStatus(int status, int x, int y) {
 	if (status == GLUT_MENU_IN_USE) menuFlag = 1;
@@ -39,12 +27,12 @@ void processMainMenu(int option) {
  
 void processwidthMenu(int option) {
 	switch (option) {
-		case 1: point_size = 1; break;
-		case 2: point_size = 2; break;
-		case 3: point_size = 3; break;
-		case 4: point_size = 4; break;
-		case 5: point_size = 5; break;
-		case 6: point_size = 6; break;
+		case 1: line_width = 1; break;
+		case 2: line_width = 2; break;
+		case 3: line_width = 3; break;
+		case 4: line_width = 4; break;
+		case 5: line_width = 5; break;
+		case 6: line_width = 6; break;
 	}
 }
  
@@ -57,95 +45,73 @@ void processShrinkMenu(int option) {
  
 void processColorMenu(int option) {
 	switch (option) {
-		case RED :
-			red = 1.0f;
-			green = 0.0f;
-			blue = 0.0f; break;
-		case GREEN :
-			red = 0.0f;
-			green = 1.0f;
-			blue = 0.0f; break;
-		case INDIGO :
-			red = 0.0f;
-			green = 0.0f;
-			blue = 1.0f; break;
-		case ORANGE :
-			red = 1.0f;
-			green = 0.5f;
-			blue = 0.5f; break;
-		case YELLOW :
-			red = 1.0f;
-			green = 1.0f;
-			blue = 0.0f; break;
-		case PURPLE :
-			red = 1.0f;
-			green = 0.0f;
-			blue = 1.0f; break;
-		case BLUE :
-			red = 0.0f;
-			green = 1.0f;
-			blue = 1.0f; break;
 		case BLACK :
-			red = 0.0f;
-			green = 0.0f;
-			blue = 0.0f; break;
+			color.SetLineColor(BLACK); break;
+		case RED :
+			color.SetLineColor(RED); break;
+		case GREEN :
+			color.SetLineColor(GREEN); break;
+		case BLUE :
+			color.SetLineColor(BLUE); break;
+		case ORANGE :
+			color.SetLineColor(ORANGE); break;
+		case YELLOW :
+			color.SetLineColor(YELLOW); break;
+		case PURPLE :
+			color.SetLineColor(PURPLE); break;
 		case WHITE :
-			red = 1.0f;
-			green = 1.0f;
-			blue = 1.0f; break;
+			color.SetLineColor(WHITE); break;
+		case INDIGO :
+			color.SetLineColor(INDIGO); break;
 	}
-}
-
-void changeBgcolorFunc(float r, float g, float b, int k) {
-	glClearColor (r, g, b, 1.0);
-	glClear (GL_COLOR_BUFFER_BIT);
-	current_bgcolor = k;
 }
 
 void processBGColorMenu(int option) {
 	switch (option) {
 		case RED :
-			changeBgcolorFunc(1, 0, 0, 100);
+			color.changeBgcolorFunc(1, 0, 0, 100);
 			break;
 		case GREEN :
-			changeBgcolorFunc(0, 1, 0, 010);
+			color.changeBgcolorFunc(0, 1, 0, 010);
 			break;
 		case INDIGO :
-			changeBgcolorFunc(0, 0, 1, 001);
+			color.changeBgcolorFunc(0, 0, 1, 001);
 			break;
 		case ORANGE :
-			changeBgcolorFunc(1, 0.5, 0.5, 10505);
+			color.changeBgcolorFunc(1, 0.5, 0.5, 10505);
 			break;
 		case YELLOW :
-			changeBgcolorFunc(1, 1, 0, 110);
+			color.changeBgcolorFunc(1, 1, 0, 110);
 			break;
 		case PURPLE :
-			changeBgcolorFunc(1, 0, 1, 101);
+			color.changeBgcolorFunc(1, 0, 1, 101);
 			break;
 		case BLUE :
-			changeBgcolorFunc(0, 1, 1, 011);
+			color.changeBgcolorFunc(0, 1, 1, 011);
 			break;
 		case BLACK :
-			changeBgcolorFunc(0, 0, 0, 000);
+			color.changeBgcolorFunc(0, 0, 0, 000);
 			break;
 		case WHITE :
-			changeBgcolorFunc(1, 1, 1, 111);
+			color.changeBgcolorFunc(1, 1, 1, 111);
 			break;
 	}
 }
 
 void processlineTypeMenu(int option) {
-    switch (option) {
-		case STRING_LINE_TYPE :
-			line_type = 1;
-			break;
-        case NORMAL_LINE_TYPE :
-			line_type = 2;
-			break;
-		case ERASER_LINE_TYPE :
-			line_type = 3;
-			break;
-    }
+    line_type = option;
+
+	// switch (option) {
+	// 	case STRING :
+	// 		line_type = STRING;
+	// 		break;
+    //     case DOTTED :
+	// 		line_type = DOTTED;
+	// 		break;
+	// 	case ERASER :
+	// 		line_type = ERASER;
+	// 		break;
+    // }
 }
 
 void menuPointsFunc() {
@@ -161,28 +127,30 @@ void menuPointsFunc() {
 }
 
 void createPopupMenus() {
-		shrinkMenu = glutCreateMenu(processShrinkMenu);
-		glutAddMenuEntry("Shrink", SHRINK);
-		glutAddMenuEntry("Normal", NORMAL);
+	shrinkMenu = glutCreateMenu(processShrinkMenu);
+	glutAddMenuEntry("Shrink", SHRINK);
+	glutAddMenuEntry("Normal", NORMAL);
 
-		widthMenu = glutCreateMenu(processwidthMenu);
-		glutAddMenuEntry(" 1  ", 1);
-		glutAddMenuEntry(" 2  ", 2);
-		glutAddMenuEntry(" 3  ", 3);
-		glutAddMenuEntry(" 4  ", 4);
-		glutAddMenuEntry(" 5  ", 5);
-		glutAddMenuEntry(" 6  ", 6);
+	widthMenu = glutCreateMenu(processwidthMenu);
+	glutAddMenuEntry(" 1  ", 1);
+	glutAddMenuEntry(" 2  ", 2);
+	glutAddMenuEntry(" 3  ", 3);
+	glutAddMenuEntry(" 4  ", 4);
+	glutAddMenuEntry(" 5  ", 5);
+	glutAddMenuEntry(" 6  ", 6);
 
-		colorMenu = glutCreateMenu(processColorMenu);
-		menuPointsFunc();
+	colorMenu = glutCreateMenu(processColorMenu);
+	menuPointsFunc();
 
-		BGcolorMenu = glutCreateMenu(processBGColorMenu);
-		menuPointsFunc();
+	BGcolorMenu = glutCreateMenu(processBGColorMenu);
+	menuPointsFunc();
 
-        lineTypeMenu = glutCreateMenu(processlineTypeMenu);
-		glutAddMenuEntry("Normal", NORMAL_LINE_TYPE);
-        glutAddMenuEntry("String", STRING_LINE_TYPE);
-		glutAddMenuEntry("Eraser", ERASER_LINE_TYPE);
+	lineTypeMenu = glutCreateMenu(processlineTypeMenu);
+	glutAddMenuEntry("Line", STRING);
+	glutAddMenuEntry("Dotted line", DOTTED);
+	glutAddMenuEntry("Eraser", ERASER);
+
+// =======================================================
 
 	mainMenu = glutCreateMenu(processMainMenu);
 	glutAddSubMenu("Width", widthMenu);
