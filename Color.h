@@ -9,38 +9,19 @@ class Color {
         float blue;
 
     public:
-        // Color() : red(0), green(0), blue(0) {};
-        Color();
+        Color() : red(0), green(0), blue(0) {};
         Color(float r, float g, float b);
         Color(float color);
         void SetLineColor(float r, float g, float b);
         void SetLineColor(int color);
-        void changeBgcolorFunc(float r, float g, float b, int k);
+        void changeBgcolorFunc(float r, float g, float b, int new_bg_color);
 };
-
-// Color::Color() : red(0), green(0), blue(0) {
-//     SetLineColor(BLACK);
-// }
-
-Color::Color() {
-    red = 0;
-    green = 0;
-    blue = 0;
-
-    // SetLineColor(red, green, blue);
-    // glColor3f(red, green, blue);
-    // glColor3f(0, 0, 0);
-}
 
 Color::Color(float r, float g, float b) {
     SetLineColor(r, g, b);
 }
 
 Color::Color(float color) {
-    red = 0;
-    green = 0;
-    blue = 0;
-
     SetLineColor(color);
 }
 
@@ -66,9 +47,9 @@ void Color::SetLineColor(int color) {
     glColor3f(red, green, blue);
 }
 
-void Color::changeBgcolorFunc(float r, float g, float b, int k) {
+void Color::changeBgcolorFunc(float r, float g, float b, int new_bg_color) {
 	glClearColor (r, g, b, 1.0);
 	glClear (GL_COLOR_BUFFER_BIT);
-	bg_color = k;
+	bg_color = new_bg_color;
 }
 

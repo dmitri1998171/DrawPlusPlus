@@ -3,10 +3,10 @@
 #include "Variables.h"
 #include "Color.h"
 
-class Line
-{
+class Line {
     private:
-        int width;
+        int current_width;
+        int line_width;
         int eraser_width;
         int type;
         Color color;
@@ -14,66 +14,105 @@ class Line
         float prev_x, prev_y;               // предыдущ. координаты курсора
 
     public:
-        Line() {};
+        Line();
         Line(int x, int y);
-        void addLine(int x, int y);
+        void drawLine(int x, int y);
+        void drawEraser(int x, int y);
         void changeCoord(int x, int y);
         void setType(int type);
         void setWidth(int width);
+        Color* getColor();
 };
+
+Line::Line() {
+    line_width = 2;
+    eraser_width = LARGE;
+    type = LINE;
+    color.SetLineColor(BLACK);
+}
 
 Line::Line(int x, int y)
 {
-    width = 2;
-    eraser_width = SMALL;
-    type = STRING;
-
+    line_width = 2;
+    eraser_width = LARGE;
+    type = LINE;
+    color.SetLineColor(BLACK);
     changeCoord(x, y);
 }
 
-void Line::addLine(int x, int y) {
-    glLineWidth((GLfloat)width);
+void Line::drawLine(int x, int y) {
+    switch (type) {
+        case LINE:
+            current_width = line_width;
 
-	// glEnable(GL_LINE_STIPPLE); 		// разрешаем рисовать прерывистую линию
-	// glLineStipple(2, 58360);    		// устанавливаем маску
-	
-	y = WIDTH - y;
+            glLineWidth((GLfloat)current_width);    // Меняем толщину линии
+            glBegin(GL_LINES);                      // Рисуем линию
+                glVertex2f(prev_x, prev_y);
+                glVertex2f(x, y);
+            glEnd();
 
-	if(type == STRING) {
-		glBegin(GL_LINES);
-            glVertex2f(prev_x, prev_y);
-            glVertex2f(x, y);
-        glEnd();
+            glFlush();
+            changeCoord(x, y);                      // Конец текущ. линии это начало след.
+            break;
 
-        glFlush();
+        case STRAIGHT:
+            glLineWidth((GLfloat)current_width);    // Меняем толщину линии
+            glBegin(GL_LINE);                      // Рисуем линию
+                glVertex2f(prev_x, prev_y);
+                glVertex2f(x, y);
+            glEnd();
 
-        changeCoord(x, y);
-	}
+            glFlush();
+            // changeCoord(x, y);                      // Конец текущ. линии это начало след.
+            break;
 
-	if(type == DOTTED) {
-		glBegin(GL_LINES);
-            glVertex2f(prev_x, prev_y);
-            glVertex2f(x, y);
-        glEnd();
+        case ERASER:
+            // drawEraser(x, y);
 
-        glFlush();
+            color.SetLineColor(bg_color);
+            // current_width = eraser_width;
+            glLineWidth((GLfloat)eraser_width);    // Меняем толщину линии
+            glBegin(GL_LINES);                      // Рисуем линию
+                glVertex2f(prev_x, prev_y);
+                glVertex2f(x, y);
+            glEnd();
 
-        changeCoord(x, y);
-	}
-
-	if(type == ERASER) {
-		color.SetLineColor(bg_color);
-		glLineWidth((GLfloat)eraser_width);
+            glFlush();
+            changeCoord(x, y);                      // Конец текущ. линии это начало след.
+            
+            break;
+    }
 				
-		glBegin(GL_LINES);
-            glVertex2f(prev_x, prev_y);
-            glVertex2f(x, y);
-        glEnd();
+    
+}
 
-        glFlush();
+void Line::drawEraser(int x, int y) {
+    float one_per_cursor = WIDTH * 0.01;            // 1% от высоты в глоб. коорд. (0-WIDTH)
+    float one_per_quad = one_per_cursor * 0.01;     // 1% от высоты окна в локальных коорд. (0-1)
 
-        changeCoord(x, y);
-	}
+    // double _x = (x * one_per_quad * 0.08) - 1;
+    // double _y = (y * one_per_quad * 0.08) - 1;
+
+    cout << "x: " << x << " y: " << y << endl;
+    // cout << "local_x: " << _x << " local_y: " << _y << endl;
+
+    glPushMatrix();
+    glLoadIdentity();
+    
+    glClear (GL_COLOR_BUFFER_BIT);
+    // glTranslatef(_x, _y, 0.0f);
+    glTranslatef(x, y, 0.0f);
+    
+    glColor3f(0.0f, 0.0f, 0.0f);
+    glBegin(GL_LINE_LOOP);                      // Рисуем квадрат    
+        glVertex2f(-0.03, -0.03);
+        glVertex2f(-0.03,  0.03);
+        glVertex2f( 0.03,  0.03);
+        glVertex2f( 0.03, -0.03);
+    glEnd();
+
+    glFlush();
+    glPopMatrix();
 }
 
 void Line::changeCoord(int x, int y) {
@@ -86,5 +125,9 @@ void Line::setType(int type) {
 }
 
 void Line::setWidth(int width) {
-    this->width = width;
+    this->line_width = width;
+}
+
+Color* Line::getColor() {
+    return &color;
 }

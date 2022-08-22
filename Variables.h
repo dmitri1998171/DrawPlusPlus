@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
 
 #define WIDTH 500
 #define HEIGHT 500
@@ -23,9 +24,14 @@ enum COLORS {
 };
 
 enum LINE_TYPES {
-    STRING = 0,
-    DOTTED,
+    LINE = 0,
+    STRAIGHT,
     ERASER
+};
+
+enum DOTTED_TYPES {
+    STRING = 0,
+    DOTTED
 };
 
 enum ERASER_WIDTH {
@@ -34,4 +40,4 @@ enum ERASER_WIDTH {
     LARGE = 30
 };
 
-int bg_color = WHITE;  // текущ. цвет фона
+int bg_color = WHITE;  			// текущ. цвет фона

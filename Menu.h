@@ -1,18 +1,17 @@
 #pragma once
 
 #include "Variables.h"
-#include "Color.h"
  
 #define SHRINK 1
 #define NORMAL 2
 
 #define CLEAR 1
 
-Color color;
-Line line;
+Line* line;
+vector<Line*> linesCounter;		// учет созданных линий
 
 // идентификаторы меню
-int widthMenu, shrinkMenu, mainMenu, colorMenu, BGcolorMenu, lineTypeMenu;
+int widthMenu, dottedMenu, mainMenu, colorMenu, BGcolorMenu, lineTypeMenu;
 int menuFlag = 0;           // статус меню
 
 void processMenuStatus(int status, int x, int y) {
@@ -23,80 +22,89 @@ void processMenuStatus(int status, int x, int y) {
 void processMainMenu(int option) {
 	switch(option) {
 		case CLEAR: 
-		glClearColor(1, 1, 1, 1);
-		glClear (GL_COLOR_BUFFER_BIT); 
-		break;
+			glClearColor(1, 1, 1, 1);
+			glClear (GL_COLOR_BUFFER_BIT); 
+			
+			for (int i = 0; i < linesCounter.size(); i++)
+				delete linesCounter[i];
+			
+			linesCounter.clear();
+			break;
 	}
 }
  
 void processwidthMenu(int option) {
 	switch (option) {
-		case 1: line.setWidth(1); break;
-		case 2: line.setWidth(2); break;
-		case 3: line.setWidth(3); break;
-		case 4: line.setWidth(4); break;
-		case 5: line.setWidth(5); break;
-		case 6: line.setWidth(6); break;
+		case 1: line->setWidth(1); break;
+		case 2: line->setWidth(2); break;
+		case 3: line->setWidth(3); break;
+		case 4: line->setWidth(4); break;
+		case 5: line->setWidth(5); break;
+		case 6: line->setWidth(6); break;
 	}
 }
  
 void processColorMenu(int option) {
 	switch (option) {
 		case BLACK :
-			color.SetLineColor(BLACK); break;
+			line->getColor()->SetLineColor(BLACK); break;
 		case RED :
-			color.SetLineColor(RED); break;
+			line->getColor()->SetLineColor(RED); break;
 		case GREEN :
-			color.SetLineColor(GREEN); break;
+			line->getColor()->SetLineColor(GREEN); break;
 		case BLUE :
-			color.SetLineColor(BLUE); break;
+			line->getColor()->SetLineColor(BLUE); break;
 		case ORANGE :
-			color.SetLineColor(ORANGE); break;
+			line->getColor()->SetLineColor(ORANGE); break;
 		case YELLOW :
-			color.SetLineColor(YELLOW); break;
+			line->getColor()->SetLineColor(YELLOW); break;
 		case PURPLE :
-			color.SetLineColor(PURPLE); break;
+			line->getColor()->SetLineColor(PURPLE); break;
 		case WHITE :
-			color.SetLineColor(WHITE); break;
+			line->getColor()->SetLineColor(WHITE); break;
 		case INDIGO :
-			color.SetLineColor(INDIGO); break;
+			line->getColor()->SetLineColor(INDIGO); break;
 	}
 }
 
 void processBGColorMenu(int option) {
 	switch (option) {
 		case RED :
-			color.changeBgcolorFunc(1, 0, 0, 100);
+			line->getColor()->changeBgcolorFunc(1, 0, 0, RED);
 			break;
 		case GREEN :
-			color.changeBgcolorFunc(0, 1, 0, 010);
+			line->getColor()->changeBgcolorFunc(0, 1, 0, GREEN);
 			break;
 		case INDIGO :
-			color.changeBgcolorFunc(0, 0, 1, 001);
+			line->getColor()->changeBgcolorFunc(0, 0, 1, INDIGO);
 			break;
 		case ORANGE :
-			color.changeBgcolorFunc(1, 0.5, 0.5, 10505);
+			line->getColor()->changeBgcolorFunc(1, 0.5, 0.5, ORANGE);
 			break;
 		case YELLOW :
-			color.changeBgcolorFunc(1, 1, 0, 110);
+			line->getColor()->changeBgcolorFunc(1, 1, 0, YELLOW);
 			break;
 		case PURPLE :
-			color.changeBgcolorFunc(1, 0, 1, 101);
+			line->getColor()->changeBgcolorFunc(1, 0, 1, PURPLE);
 			break;
 		case BLUE :
-			color.changeBgcolorFunc(0, 1, 1, 011);
+			line->getColor()->changeBgcolorFunc(0, 1, 1, BLUE);
 			break;
 		case BLACK :
-			color.changeBgcolorFunc(0, 0, 0, 000);
+			line->getColor()->changeBgcolorFunc(0, 0, 0, BLACK);
 			break;
 		case WHITE :
-			color.changeBgcolorFunc(1, 1, 1, 111);
+			line->getColor()->changeBgcolorFunc(1, 1, 1, WHITE);
 			break;
 	}
 }
 
 void processlineTypeMenu(int option) {
-    line.setType(option);
+    line->setType(option);
+}
+
+void processDottedMenu(int option) {
+
 }
 
 void menuPointsFunc() {
@@ -127,9 +135,13 @@ void createPopupMenus() {
 	menuPointsFunc();
 
 	lineTypeMenu = glutCreateMenu(processlineTypeMenu);
-	glutAddMenuEntry("Line", STRING);
-	glutAddMenuEntry("Dotted line", DOTTED);
+	glutAddMenuEntry("Line", LINE);
+	glutAddMenuEntry("Straight line", STRAIGHT);
 	glutAddMenuEntry("Eraser", ERASER);
+
+	dottedMenu = glutCreateMenu(processDottedMenu);
+	glutAddMenuEntry("String", STRING);
+	glutAddMenuEntry("Dotted line", DOTTED);
 
 // =======================================================
 
@@ -138,6 +150,7 @@ void createPopupMenus() {
 	glutAddSubMenu("Line Color", colorMenu);
 	glutAddSubMenu("Background Color", BGcolorMenu);
     glutAddSubMenu("Line type", lineTypeMenu);
+    glutAddSubMenu("Dotted", dottedMenu);
 	glutAddMenuEntry("Clear", CLEAR);
 
 	// прикрепить меню к правой кнопке
