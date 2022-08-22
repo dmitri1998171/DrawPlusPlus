@@ -1,26 +1,26 @@
 #pragma once
 
 #include "Variables.h"
-#include "Color.h"
 
 class Line {
     private:
         int type;
+        int color;
         int line_width;
         int current_width;
         int eraser_width;
         float red, green, blue;
         float prev_x, prev_y;               // предыдущ. координаты курсора
+        vector<coord> coord;                // последовательность точек, из которых состоит линия
 
     public:
         Line();
-        Line(int x, int y);
-        void drawLine(int x, int y);
+        Line(Coord newCoord);
+        void drawLine();
         void drawEraser(int x, int y);
-        void changeCoord(int x, int y);
+        void changeCoord(Coord newCoord);
         void setType(int type);
         void setWidth(int width);
-        Color* getColor();
         void SetLineColor(int color);
 };
 
@@ -31,54 +31,64 @@ Line::Line() {
     SetLineColor(lineColor);
 }
 
-Line::Line(int x, int y)
-{
+Line::Line(Coord newCoord) {
     line_width = 2;
     eraser_width = LARGE;
     type = LINE;
-    SetLineColor(lineColor);
-    changeCoord(x, y);
+    color = lineColor;
+    changeCoord(newCoord);
 }
 
-void Line::drawLine(int x, int y) {
+void Line::drawLine() {
+    SetLineColor(color);
+
     switch (type) {
         case LINE:
             current_width = line_width;
 
             glLineWidth((GLfloat)current_width);    // Меняем толщину линии
-            glBegin(GL_LINES);                      // Рисуем линию
-                glVertex2f(prev_x, prev_y);
-                glVertex2f(x, y);
+            glBegin(GL_LINE_STRIP);                      // Рисуем линию
+
+            for (int i = 0; i < coord.size(); i++)
+                glVertex2f(coord[i].x, coord[i].y);
+
             glEnd();
 
-            glFlush();
-            changeCoord(x, y);                      // Конец текущ. линии это начало след.
+            // changeCoord(x, y);                      // Конец текущ. линии это начало след.
             break;
 
         case STRAIGHT:
-            glLineWidth((GLfloat)current_width);    // Меняем толщину линии
-            glBegin(GL_LINE);                      // Рисуем линию
-                glVertex2f(prev_x, prev_y);
-                glVertex2f(x, y);
-            glEnd();
+            // glLineWidth((GLfloat)current_width);    // Меняем толщину линии
+            // glBegin(GL_LINE);                      // Рисуем линию
+            //     glVertex2f(prev_x, prev_y);
+            //     glVertex2f(x, y);
+            // glEnd();
 
-            glFlush();
+            // glFlush();
             // changeCoord(x, y);                      // Конец текущ. линии это начало след.
             break;
 
         case ERASER:
             // drawEraser(x, y);
 
-            SetLineColor(bg_color);
-            // current_width = eraser_width;
-            glLineWidth((GLfloat)eraser_width);    // Меняем толщину линии
-            glBegin(GL_LINES);                      // Рисуем линию
-                glVertex2f(prev_x, prev_y);
-                glVertex2f(x, y);
-            glEnd();
+            // SetLineColor(bg_color);
+            // glLineWidth((GLfloat)current_width);    // Меняем толщину линии
+            // glBegin(GL_LINE_STRIP);                      // Рисуем линию
 
-            glFlush();
-            changeCoord(x, y);                      // Конец текущ. линии это начало след.
+            // for (int i = 0; i < coord.size(); i++)
+            //     glVertex2f(coord[i].x, coord[i].y);
+
+            // glEnd();
+
+            // // current_width = eraser_width;
+            // glLineWidth((GLfloat)eraser_width);    // Меняем толщину линии
+            // glBegin(GL_LINES);                      // Рисуем линию
+            //     glVertex2f(prev_x, prev_y);
+            //     glVertex2f(x, y);
+            // glEnd();
+
+            // glFlush();
+            // changeCoord(x, y);                      // Конец текущ. линии это начало след.
             
             break;
     }
@@ -113,9 +123,11 @@ void Line::drawEraser(int x, int y) {
     glPopMatrix();
 }
 
-void Line::changeCoord(int x, int y) {
-    prev_x = x; 
-    prev_y = y;
+void Line::changeCoord(Coord newCoord) {
+	coord.push_back(newCoord);
+
+    // prev_x = x; 
+    // prev_y = y;
 }
 
 void Line::setType(int type) {
