@@ -40,4 +40,5 @@ enum ERASER_WIDTH {
     LARGE = 30
 };
 
+int lineColor = BLACK;
 int bg_color = WHITE;  			// текущ. цвет фона

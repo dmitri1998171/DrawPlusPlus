@@ -5,12 +5,11 @@
 
 class Line {
     private:
-        int current_width;
-        int line_width;
-        int eraser_width;
         int type;
-        Color color;
-
+        int line_width;
+        int current_width;
+        int eraser_width;
+        float red, green, blue;
         float prev_x, prev_y;               // предыдущ. координаты курсора
 
     public:
@@ -22,13 +21,14 @@ class Line {
         void setType(int type);
         void setWidth(int width);
         Color* getColor();
+        void SetLineColor(int color);
 };
 
 Line::Line() {
     line_width = 2;
     eraser_width = LARGE;
     type = LINE;
-    color.SetLineColor(BLACK);
+    SetLineColor(lineColor);
 }
 
 Line::Line(int x, int y)
@@ -36,7 +36,7 @@ Line::Line(int x, int y)
     line_width = 2;
     eraser_width = LARGE;
     type = LINE;
-    color.SetLineColor(BLACK);
+    SetLineColor(lineColor);
     changeCoord(x, y);
 }
 
@@ -69,7 +69,7 @@ void Line::drawLine(int x, int y) {
         case ERASER:
             // drawEraser(x, y);
 
-            color.SetLineColor(bg_color);
+            SetLineColor(bg_color);
             // current_width = eraser_width;
             glLineWidth((GLfloat)eraser_width);    // Меняем толщину линии
             glBegin(GL_LINES);                      // Рисуем линию
@@ -82,8 +82,6 @@ void Line::drawLine(int x, int y) {
             
             break;
     }
-				
-    
 }
 
 void Line::drawEraser(int x, int y) {
@@ -128,6 +126,16 @@ void Line::setWidth(int width) {
     this->line_width = width;
 }
 
-Color* Line::getColor() {
-    return &color;
+void Line::SetLineColor(int color) {
+    if(color == BLACK) { red = 0; green = 0; blue = 0; }
+    if(color == RED) { red = 1; green = 0; blue = 0; }
+    if(color == GREEN) { red = 0; green = 1; blue = 0; }
+    if(color == BLUE) { red = 0; green = 1; blue = 1; }
+    if(color == ORANGE) { red = 1; green = 0.5; blue = 0.5; }
+    if(color == YELLOW) { red = 1; green = 1; blue = 0; }
+    if(color == PURPLE) { red = 1; green = 0; blue = 1; }
+    if(color == WHITE) { red = 1; green = 1; blue = 1; }
+    if(color == INDIGO) { red = 0; green = 0; blue = 1; }
+
+    glColor3f(red, green, blue);
 }

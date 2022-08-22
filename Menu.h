@@ -14,6 +14,14 @@ vector<Line*> linesCounter;		// учет созданных линий
 int widthMenu, dottedMenu, mainMenu, colorMenu, BGcolorMenu, lineTypeMenu;
 int menuFlag = 0;           // статус меню
 
+void changeBgcolorFunc(float r, float g, float b, int new_bg_color) {
+	glClearColor (r, g, b, 1.0);
+	glClear (GL_COLOR_BUFFER_BIT);
+	bg_color = new_bg_color;
+}
+
+// ===============================================================
+
 void processMenuStatus(int status, int x, int y) {
 	if (status == GLUT_MENU_IN_USE) menuFlag = 1;
 	else menuFlag = 0;
@@ -45,56 +53,37 @@ void processwidthMenu(int option) {
 }
  
 void processColorMenu(int option) {
-	switch (option) {
-		case BLACK :
-			line->getColor()->SetLineColor(BLACK); break;
-		case RED :
-			line->getColor()->SetLineColor(RED); break;
-		case GREEN :
-			line->getColor()->SetLineColor(GREEN); break;
-		case BLUE :
-			line->getColor()->SetLineColor(BLUE); break;
-		case ORANGE :
-			line->getColor()->SetLineColor(ORANGE); break;
-		case YELLOW :
-			line->getColor()->SetLineColor(YELLOW); break;
-		case PURPLE :
-			line->getColor()->SetLineColor(PURPLE); break;
-		case WHITE :
-			line->getColor()->SetLineColor(WHITE); break;
-		case INDIGO :
-			line->getColor()->SetLineColor(INDIGO); break;
-	}
+	lineColor = option;
 }
 
 void processBGColorMenu(int option) {
 	switch (option) {
 		case RED :
-			line->getColor()->changeBgcolorFunc(1, 0, 0, RED);
+			changeBgcolorFunc(1, 0, 0, RED);
 			break;
 		case GREEN :
-			line->getColor()->changeBgcolorFunc(0, 1, 0, GREEN);
+			changeBgcolorFunc(0, 1, 0, GREEN);
 			break;
 		case INDIGO :
-			line->getColor()->changeBgcolorFunc(0, 0, 1, INDIGO);
+			changeBgcolorFunc(0, 0, 1, INDIGO);
 			break;
 		case ORANGE :
-			line->getColor()->changeBgcolorFunc(1, 0.5, 0.5, ORANGE);
+			changeBgcolorFunc(1, 0.5, 0.5, ORANGE);
 			break;
 		case YELLOW :
-			line->getColor()->changeBgcolorFunc(1, 1, 0, YELLOW);
+			changeBgcolorFunc(1, 1, 0, YELLOW);
 			break;
 		case PURPLE :
-			line->getColor()->changeBgcolorFunc(1, 0, 1, PURPLE);
+			changeBgcolorFunc(1, 0, 1, PURPLE);
 			break;
 		case BLUE :
-			line->getColor()->changeBgcolorFunc(0, 1, 1, BLUE);
+			changeBgcolorFunc(0, 1, 1, BLUE);
 			break;
 		case BLACK :
-			line->getColor()->changeBgcolorFunc(0, 0, 0, BLACK);
+			changeBgcolorFunc(0, 0, 0, BLACK);
 			break;
 		case WHITE :
-			line->getColor()->changeBgcolorFunc(1, 1, 1, WHITE);
+			changeBgcolorFunc(1, 1, 1, WHITE);
 			break;
 	}
 }
