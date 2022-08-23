@@ -19,9 +19,9 @@ void drawEraser() {
     glTranslatef(_x, _y, 0.0f);
 
     glColor3f(0.0f, 0.0f, 0.0f);
-    glLineWidth((GLfloat)2);    // Меняем толщину линии
+    glLineWidth((GLfloat)2);    					// Меняем толщину линии
 
-    glBegin(GL_LINE_LOOP);                      // Рисуем квадрат
+    glBegin(GL_LINE_LOOP);                      	// Рисуем квадрат
         glVertex2f(-eraser_width * ERASER_SCALE, -eraser_width * ERASER_SCALE);
         glVertex2f(-eraser_width * ERASER_SCALE,  eraser_width * ERASER_SCALE);
         glVertex2f( eraser_width * ERASER_SCALE,  eraser_width * ERASER_SCALE);
@@ -45,23 +45,15 @@ void renderScene(void) {
 }
 
 void mouseMove(int x, int y) {
-	Coord newCoord;
-	newCoord.x = x;
-	newCoord.y = y;
-
 	X = x;
 	Y = y;
 
-	line->changeCoord(newCoord);
+	line->changeCoord(x, y);
 }
 
 void MouseFunc(int button, int state, int x, int y) {
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		Coord newCoord;
-		newCoord.x = x;
-		newCoord.y = y;
-		
-		line = new Line(newCoord);
+		line = new Line(x, y);
 		linesCounter.push_back(line);
 	}
 }
@@ -73,12 +65,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
 void Init() {
 	glClearColor (1.0, 1.0, 1.0, 1.0);
 	glClear (GL_COLOR_BUFFER_BIT);
-	glOrtho(0, WIDTH, HEIGHT, 0, 0, 1);
-
-	// glViewport(0, 0, WIDTH, HEIGHT);
-	// glMatrixMode(GL_PROJECTION);
-	// glLoadIdentity();
-	// gluOrtho2D(0, 0, WIDTH, HEIGHT);
+	gluOrtho2D(0, WIDTH, HEIGHT, 0);
 }
 
 void reshape(int w, int h) {

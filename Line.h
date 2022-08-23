@@ -6,7 +6,6 @@ class Line {
     private:
         int color;
         int type;
-        int line_width;
         int current_width;
         float red, green, blue;
         float prev_x, prev_y;               // предыдущ. координаты курсора
@@ -17,26 +16,24 @@ class Line {
         
     public:
         Line();
-        Line(Coord newCoord);
+        Line(int x, int y);
         void drawLine();
-        void changeCoord(Coord newCoord);
+        void changeCoord(int x, int y);
         void setWidth(int width);
         void SetLineColor(int color);
 };
 
 Line::Line() {
-    line_width = 2;
-    color = lineColor;
-    type = linetype;
-    SetLineColor(lineColor);
-}
-
-Line::Line(Coord newCoord) {
-    line_width = 2;
     current_width = lineWidth;
     type = linetype;
     color = lineColor;
-    changeCoord(newCoord);
+}
+
+Line::Line(int x, int y) {
+    current_width = lineWidth;
+    type = linetype;
+    color = lineColor;
+    changeCoord(x, y);
 }
 
 void Line::drawLine() {
@@ -53,12 +50,15 @@ void Line::drawLine() {
             drawCurveLine(bg_color, eraser_width);
             break;
     }
+
+    for (int i = 0; i < coord.size(); i++)
+        cout << "x: " << coord[i].x << " y: " << coord[i].y << endl;
 }
 
 void Line::drawCurveLine(int color, int width) {
     SetLineColor(color);
-    glLineWidth((GLfloat)width);    // Меняем толщину линии
-    glBegin(GL_LINE_STRIP);                      // Рисуем линию
+    glLineWidth((GLfloat)width);                    // Меняем толщину линии
+    glBegin(GL_LINE_STRIP);                         // Рисуем линию
 
     for (int i = 0; i < coord.size(); i++)
         glVertex2f(coord[i].x, coord[i].y);
@@ -67,19 +67,22 @@ void Line::drawCurveLine(int color, int width) {
 }
 
 void Line::drawStraightLine() {
-    // glLineWidth((GLfloat)current_width);    // Меняем толщину линии
-    // glBegin(GL_LINE);                      // Рисуем линию
-    //     glVertex2f(prev_x, prev_y);
-    //     glVertex2f(x, y);
-    // glEnd();
+    int size = coord.size();
+
+    SetLineColor(BLACK);
+    glLineWidth((GLfloat)current_width);            // Меняем толщину линии
+    glBegin(GL_LINE);                               // Рисуем линию
+        glVertex2f(coord[1].x, coord[1].y);
+        glVertex2f(coord[size - 1].x, coord[size - 1].y);
+    glEnd();
 }
 
-void Line::changeCoord(Coord newCoord) {
+void Line::changeCoord(int x, int y) {
+    Coord newCoord;
+    newCoord.x = x;
+    newCoord.y = y;
+
 	coord.push_back(newCoord);
-}
-
-void Line::setWidth(int width) {
-    this->line_width = width;
 }
 
 void Line::SetLineColor(int color) {

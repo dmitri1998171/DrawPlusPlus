@@ -45,8 +45,7 @@ enum ERASER_WIDTH {
 int linetype = LINE;
 int lineColor = BLACK;
 int lineWidth = 2;
-int bg_color = WHITE;  			// текущ. цвет фона
-
+int bg_color = WHITE;  
 int eraser_width = LARGE;
 
 typedef struct Coord {

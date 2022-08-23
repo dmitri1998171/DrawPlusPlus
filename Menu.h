@@ -12,7 +12,7 @@ vector<Line*> linesCounter;		// учет созданных линий
 
 // идентификаторы меню
 int widthMenu, dottedMenu, mainMenu, colorMenu, BGcolorMenu, lineTypeMenu, eraserWidthMenu;
-int menuFlag = 0;           // статус меню
+int menuFlag = 0;           	// статус меню
 
 void changeBgcolorFunc(float r, float g, float b, int new_bg_color) {
 	glClearColor (r, g, b, 1.0);
