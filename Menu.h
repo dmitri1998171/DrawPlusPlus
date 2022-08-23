@@ -11,7 +11,7 @@ Line* line;
 vector<Line*> linesCounter;		// учет созданных линий
 
 // идентификаторы меню
-int widthMenu, dottedMenu, mainMenu, colorMenu, BGcolorMenu, lineTypeMenu;
+int widthMenu, dottedMenu, mainMenu, colorMenu, BGcolorMenu, lineTypeMenu, eraserWidthMenu;
 int menuFlag = 0;           // статус меню
 
 void changeBgcolorFunc(float r, float g, float b, int new_bg_color) {
@@ -42,14 +42,7 @@ void processMainMenu(int option) {
 }
  
 void processwidthMenu(int option) {
-	switch (option) {
-		case 1: line->setWidth(1); break;
-		case 2: line->setWidth(2); break;
-		case 3: line->setWidth(3); break;
-		case 4: line->setWidth(4); break;
-		case 5: line->setWidth(5); break;
-		case 6: line->setWidth(6); break;
-	}
+	lineWidth = option;
 }
  
 void processColorMenu(int option) {
@@ -89,7 +82,12 @@ void processBGColorMenu(int option) {
 }
 
 void processlineTypeMenu(int option) {
-    line->setType(option);
+    linetype = option;
+}
+
+void processEraserWidthMenu(int option) {
+	linetype = ERASER;
+	eraser_width = option;
 }
 
 void processDottedMenu(int option) {
@@ -123,10 +121,15 @@ void createPopupMenus() {
 	BGcolorMenu = glutCreateMenu(processBGColorMenu);
 	menuPointsFunc();
 
+	eraserWidthMenu = glutCreateMenu(processEraserWidthMenu);
+	glutAddMenuEntry("SMALL", SMALL);
+	glutAddMenuEntry("MEDIUM", MEDIUM);
+	glutAddMenuEntry("LARGE", LARGE);
+	
 	lineTypeMenu = glutCreateMenu(processlineTypeMenu);
 	glutAddMenuEntry("Line", LINE);
 	glutAddMenuEntry("Straight line", STRAIGHT);
-	glutAddMenuEntry("Eraser", ERASER);
+    glutAddSubMenu("Eraser", eraserWidthMenu);
 
 	dottedMenu = glutCreateMenu(processDottedMenu);
 	glutAddMenuEntry("String", STRING);

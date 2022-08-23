@@ -9,6 +9,8 @@
 #define WIDTH 500
 #define HEIGHT 500
 
+#define ERASER_SCALE 0.001
+
 using namespace std;
 
 enum COLORS {
@@ -36,12 +38,16 @@ enum DOTTED_TYPES {
 
 enum ERASER_WIDTH {
     SMALL = 10,
-    MEDIUM = 20,
-    LARGE = 30
+    MEDIUM = 30,
+    LARGE = 40
 };
 
+int linetype = LINE;
 int lineColor = BLACK;
+int lineWidth = 2;
 int bg_color = WHITE;  			// текущ. цвет фона
+
+int eraser_width = LARGE;
 
 typedef struct Coord {
     int x;

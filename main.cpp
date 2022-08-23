@@ -2,30 +2,57 @@
 #include "Line.h"
 #include "Menu.h"
 
-void renderScene(void) {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
- 
-	for (int i = 0; i < linesCounter.size(); i++) {
-		linesCounter[i]->drawLine();
+int X, Y;
 
-		// glFlush();
-		// glutPostRedisplay();
-	}
+void drawEraser() {
+    float one_per_cursor = WIDTH * 0.01;            // 1% от высоты в глоб. коорд. (0-WIDTH)
+    float one_per_quad = one_per_cursor * 0.01;     // 1% от высоты окна в локальных коорд. (0-1)
+
+    float coef = 0.08;
+
+    double _x = (X * one_per_quad * coef) - 1;
+    double _y = ((WIDTH - Y) * one_per_quad * coef) - 1;
+
+    glPushMatrix();
+    glLoadIdentity();
+
+    glTranslatef(_x, _y, 0.0f);
+
+    glColor3f(0.0f, 0.0f, 0.0f);
+    glLineWidth((GLfloat)2);    // Меняем толщину линии
+
+    glBegin(GL_LINE_LOOP);                      // Рисуем квадрат
+        glVertex2f(-eraser_width * ERASER_SCALE, -eraser_width * ERASER_SCALE);
+        glVertex2f(-eraser_width * ERASER_SCALE,  eraser_width * ERASER_SCALE);
+        glVertex2f( eraser_width * ERASER_SCALE,  eraser_width * ERASER_SCALE);
+        glVertex2f( eraser_width * ERASER_SCALE, -eraser_width * ERASER_SCALE);
+    glEnd();
+
+    glPopMatrix();
+}
+
+void renderScene(void) {
+	glClear(GL_COLOR_BUFFER_BIT);
+ 
+	for (int i = 0; i < linesCounter.size(); i++) 
+		linesCounter[i]->drawLine();
 	
-	glutSwapBuffers();
+	if(linetype == ERASER)
+		drawEraser();
+
+	glFlush();
 	glutPostRedisplay();
 }
 
 void mouseMove(int x, int y) {
-	
 	Coord newCoord;
 	newCoord.x = x;
 	newCoord.y = y;
 
-	line->changeCoord(newCoord);
+	X = x;
+	Y = y;
 
-	// glutSwapBuffers();
-	// glutPostRedisplay();
+	line->changeCoord(newCoord);
 }
 
 void MouseFunc(int button, int state, int x, int y) {
@@ -63,7 +90,7 @@ void reshape(int w, int h) {
 
 int main(int argc, char **argv) {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(WIDTH, HEIGHT);
 	glutCreateWindow("Draw++");
