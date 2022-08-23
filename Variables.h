@@ -28,7 +28,8 @@ enum COLORS {
 enum LINE_TYPES {
     LINE = 0,
     STRAIGHT,
-    ERASER
+    ERASER, 
+    MIRRORED
 };
 
 enum DOTTED_TYPES {
@@ -43,12 +44,18 @@ enum ERASER_WIDTH {
     LARGE = 40
 };
 
-int linetype = STRAIGHT;
+enum MIRROR_TYPE {
+    VERTICAL = 0,
+    HORIZONTAL
+};
+
+int linetype = MIRRORED;
 int lineColor = BLACK;
 int lineWidth = 2;
 int bg_color = WHITE;  
 int eraser_width = LARGE;
 int dotted = STRING;
+int mirrorType = VERTICAL;
 
 typedef struct Coord {
     int x;

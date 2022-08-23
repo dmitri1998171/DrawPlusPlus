@@ -11,7 +11,7 @@ Line* line;
 vector<Line*> linesCounter;		// учет созданных линий
 
 // идентификаторы меню
-int widthMenu, dottedMenu, mainMenu, colorMenu, BGcolorMenu, lineTypeMenu, eraserWidthMenu;
+int widthMenu, dottedMenu, mainMenu, colorMenu, BGcolorMenu, lineTypeMenu, eraserWidthMenu, mirroredLineMenu;
 int menuFlag = 0;           	// статус меню
 
 void changeBgcolorFunc(float r, float g, float b, int new_bg_color) {
@@ -90,7 +90,13 @@ void processEraserWidthMenu(int option) {
 	eraser_width = option;
 }
 
+void processMirroredLineMenu(int option) {
+	linetype = MIRRORED;
+	mirrorType = option;
+}
+
 void processDottedMenu(int option) {
+	linetype = STRAIGHT;
 	dotted = option;
 }
 
@@ -122,14 +128,20 @@ void createPopupMenus() {
 	menuPointsFunc();
 
 	eraserWidthMenu = glutCreateMenu(processEraserWidthMenu);
-	glutAddMenuEntry("SMALL", SMALL);
-	glutAddMenuEntry("MEDIUM", MEDIUM);
-	glutAddMenuEntry("LARGE", LARGE);
+	glutAddMenuEntry("Small", SMALL);
+	glutAddMenuEntry("Medium", MEDIUM);
+	glutAddMenuEntry("Large", LARGE);
+
+	mirroredLineMenu = glutCreateMenu(processMirroredLineMenu);
+	glutAddMenuEntry("Vertical", VERTICAL);
+	glutAddMenuEntry("Horizontal", HORIZONTAL);
+	// glutAddMenuEntry("LARGE", LARGE);
 	
 	lineTypeMenu = glutCreateMenu(processlineTypeMenu);
 	glutAddMenuEntry("Line", LINE);
 	glutAddMenuEntry("Straight line", STRAIGHT);
     glutAddSubMenu("Eraser", eraserWidthMenu);
+    glutAddSubMenu("Mirrored line", mirroredLineMenu);
 
 	dottedMenu = glutCreateMenu(processDottedMenu);
 	glutAddMenuEntry("String", STRING);

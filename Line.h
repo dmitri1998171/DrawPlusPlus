@@ -8,33 +8,37 @@ class Line {
         int type;
         int current_width;
         int dottedLine;
+        int lineMirrorType;
         float red, green, blue;
         float prev_x, prev_y;               // предыдущ. координаты курсора
         vector<coord> coord;                // последовательность точек, из которых состоит линия
 
         void drawCurveLine(int color, int width);
         void drawStraightLine();
+        void drawMirroredLine();
         
     public:
         Line();
         Line(int x, int y);
         void drawLine();
         void changeCoord(int x, int y);
-        void setWidth(int width);
         void SetLineColor(int color);
 };
 
 Line::Line() {
-    current_width = lineWidth;
-    type = linetype;
     color = lineColor;
+    type = linetype;
+    current_width = lineWidth;
+    dottedLine = dotted;
+    lineMirrorType = mirrorType;
 }
 
 Line::Line(int x, int y) {
-    current_width = lineWidth;
-    type = linetype;
     color = lineColor;
+    type = linetype;
+    current_width = lineWidth;
     dottedLine = dotted;
+    lineMirrorType = mirrorType;
     changeCoord(x, y);
 }
 
@@ -51,10 +55,11 @@ void Line::drawLine() {
         case ERASER:
             drawCurveLine(bg_color, eraser_width);
             break;
-    }
 
-    for (int i = 0; i < coord.size(); i++)
-        cout << "x: " << coord[i].x << " y: " << coord[i].y << endl;
+        case MIRRORED:
+            drawMirroredLine();
+            break;
+    }
 }
 
 void Line::drawCurveLine(int color, int width) {
@@ -71,7 +76,7 @@ void Line::drawCurveLine(int color, int width) {
 void Line::drawStraightLine() {
     int size = coord.size() - 1;
 
-    SetLineColor(BLACK);
+    SetLineColor(color);
     glLineWidth((GLfloat)current_width);             // Меняем толщину линии
 
     switch (dottedLine) {
@@ -91,6 +96,31 @@ void Line::drawStraightLine() {
     glBegin(GL_LINES);                               // Рисуем линию
         glVertex2f(coord[0].x, coord[0].y);
         glVertex2f(coord[size].x, coord[size].y);
+    glEnd();
+}
+
+void Line::drawMirroredLine() {
+    SetLineColor(color);
+    glLineWidth((GLfloat)current_width);            // Меняем толщину линии
+    glBegin(GL_LINE_STRIP);                         // Рисуем линию
+
+    for (int i = 0; i < coord.size(); i++)
+        glVertex2f(coord[i].x, coord[i].y);
+
+    glEnd();
+
+    glBegin(GL_LINE_STRIP);                         // Рисуем зеркальную линию
+
+    if(lineMirrorType == VERTICAL) {
+        for (int i = 0; i < coord.size(); i++) 
+            glVertex2f(HEIGHT - coord[i].x, coord[i].y);
+    }
+
+    if(lineMirrorType == HORIZONTAL) {
+        for (int i = 0; i < coord.size(); i++) 
+            glVertex2f(coord[i].x, WIDTH - coord[i].y);
+    }
+
     glEnd();
 }
 
