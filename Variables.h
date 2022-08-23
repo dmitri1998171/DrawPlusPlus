@@ -33,7 +33,8 @@ enum LINE_TYPES {
 
 enum DOTTED_TYPES {
     STRING = 0,
-    DOTTED
+    DOTTED,
+    MIXED
 };
 
 enum ERASER_WIDTH {
@@ -42,11 +43,12 @@ enum ERASER_WIDTH {
     LARGE = 40
 };
 
-int linetype = LINE;
+int linetype = STRAIGHT;
 int lineColor = BLACK;
 int lineWidth = 2;
 int bg_color = WHITE;  
 int eraser_width = LARGE;
+int dotted = STRING;
 
 typedef struct Coord {
     int x;

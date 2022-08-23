@@ -91,7 +91,7 @@ void processEraserWidthMenu(int option) {
 }
 
 void processDottedMenu(int option) {
-
+	dotted = option;
 }
 
 void menuPointsFunc() {
@@ -134,6 +134,7 @@ void createPopupMenus() {
 	dottedMenu = glutCreateMenu(processDottedMenu);
 	glutAddMenuEntry("String", STRING);
 	glutAddMenuEntry("Dotted line", DOTTED);
+	glutAddMenuEntry("Mixed line", MIXED);
 
 // =======================================================
 

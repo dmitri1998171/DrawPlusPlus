@@ -7,6 +7,7 @@ class Line {
         int color;
         int type;
         int current_width;
+        int dottedLine;
         float red, green, blue;
         float prev_x, prev_y;               // предыдущ. координаты курсора
         vector<coord> coord;                // последовательность точек, из которых состоит линия
@@ -33,6 +34,7 @@ Line::Line(int x, int y) {
     current_width = lineWidth;
     type = linetype;
     color = lineColor;
+    dottedLine = dotted;
     changeCoord(x, y);
 }
 
@@ -67,13 +69,28 @@ void Line::drawCurveLine(int color, int width) {
 }
 
 void Line::drawStraightLine() {
-    int size = coord.size();
+    int size = coord.size() - 1;
 
     SetLineColor(BLACK);
-    glLineWidth((GLfloat)current_width);            // Меняем толщину линии
-    glBegin(GL_LINE);                               // Рисуем линию
-        glVertex2f(coord[1].x, coord[1].y);
-        glVertex2f(coord[size - 1].x, coord[size - 1].y);
+    glLineWidth((GLfloat)current_width);             // Меняем толщину линии
+
+    switch (dottedLine) {
+        case STRING:
+            glDisable(GL_LINE_STIPPLE); 
+            break;
+        case DOTTED:
+            glLineStipple(4, 0xAAAA);
+            glEnable(GL_LINE_STIPPLE); 
+            break;
+        case MIXED:
+            glLineStipple(3, 0x1C47);
+            glEnable(GL_LINE_STIPPLE); 
+            break;
+    }
+
+    glBegin(GL_LINES);                               // Рисуем линию
+        glVertex2f(coord[0].x, coord[0].y);
+        glVertex2f(coord[size].x, coord[size].y);
     glEnd();
 }
 
