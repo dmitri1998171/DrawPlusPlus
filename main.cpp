@@ -50,6 +50,8 @@ void renderScene(void) {
 			break;
 
 		case SQUARE:
+			for (int i = 0; i < figureCounter.size(); i++)
+				figureCounter[i]->draw();
 
 			break;
 
@@ -78,6 +80,7 @@ void mouseMove(int x, int y) {
 
 void MouseFunc(int button, int state, int x, int y) {
 	CircleFactory* circle_factory = new CircleFactory;
+	SquareFactory* square_factory = new SquareFactory;
 
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		switch (figure) {
@@ -92,8 +95,7 @@ void MouseFunc(int button, int state, int x, int y) {
 				break;
 
 			case SQUARE:
-				line = new Line(x, y);
-				linesCounter.push_back(line);
+				figureCounter.push_back(square_factory->createFigure(x, y));
 				break;
 
 			case CIRCLE:

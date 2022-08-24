@@ -5,6 +5,7 @@ class Figure {
     protected:
         int figureType;
         float red, green, blue;
+        int start_x, start_y;
         vector<coord> coord;                // последовательность точек, из которых состоит фигура
 
     public:
@@ -35,12 +36,9 @@ class Figure {
 };
 
 class Circle : public Figure {
-    private:
-        int start_x, start_y;
     public:
         Circle(int x, int y);
         void draw();
-        ~Circle();
 };
 
 Circle::Circle(int x, int y) {
@@ -72,6 +70,43 @@ void Circle::draw() {
     glPopMatrix();
 }
 
+class Square : public Figure {
+    private:
+        int square_width;
+
+    public:
+        Square(int x, int y);
+        void draw();
+};
+
+Square::Square(int x, int y) {
+    square_width = 15;
+    start_x = x;
+    start_y = y;
+
+    changeCoord(x, y);
+}
+
+void Square::draw() {
+    SetLineColor(lineColor);
+    glLineWidth((GLfloat)lineWidth);                    // Меняем толщину линии
+    
+    glPushMatrix();
+    GLfloat radius = sqrt((pow((coord.back().x - start_x), 2)) + (pow((coord.back().y - start_y), 2)));
+
+    glTranslatef(start_x, start_y, 0);
+    glScalef(radius, radius, 0);
+
+    glBegin(GL_LINE_LOOP);                      	// Рисуем квадрат
+        glVertex2f(-square_width, -square_width);
+        glVertex2f(-square_width,  square_width);
+        glVertex2f( square_width,  square_width);
+        glVertex2f( square_width, -square_width);
+    glEnd();
+
+    glPopMatrix();
+}
+
 // ==================================================================
 
 class Factory {
@@ -84,5 +119,12 @@ class CircleFactory: public Factory {
   public:    
     Figure* createFigure(int x, int y) { 
       return new Circle(x, y); 
+    }
+};
+
+class SquareFactory: public Factory {
+  public:    
+    Figure* createFigure(int x, int y) { 
+      return new Square(x, y); 
     }
 };
