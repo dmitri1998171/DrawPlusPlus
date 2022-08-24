@@ -7,10 +7,7 @@
 #define CLEAR 1
 
 Figure* _figure;
-vector<Figure*> figureCounter;
-
-Line* line;
-vector<Line*> linesCounter;		// учет созданных линий
+vector<Figure*> figureCounter;	// учет созданных фигур
 
 // идентификаторы меню
 int widthMenu, dottedMenu, mainMenu, colorMenu, BGcolorMenu, FiguresMenu, lineTypeMenu, eraserWidthMenu, mirroredLineMenu;
@@ -35,10 +32,10 @@ void processMainMenu(int option) {
 			glClearColor(1, 1, 1, 1);
 			glClear (GL_COLOR_BUFFER_BIT); 
 			
-			for (int i = 0; i < linesCounter.size(); i++)
-				delete linesCounter[i];
+			for (int i = 0; i < figureCounter.size(); i++)
+				figureCounter[i]->destroy();
 			
-			linesCounter.clear();
+			figureCounter.clear();
 			break;
 	}
 }
@@ -88,20 +85,24 @@ void processFiguresMenu(int option) {
 }
 
 void processlineTypeMenu(int option) {
+	figure = LINE;
     linetype = option;
 }
 
 void processEraserWidthMenu(int option) {
+	figure = LINE;
 	linetype = ERASER;
 	eraser_width = option;
 }
 
 void processMirroredLineMenu(int option) {
+	figure = LINE;
 	linetype = MIRRORED;
 	mirrorType = option;
 }
 
 void processDottedMenu(int option) {
+	figure = LINE;
 	linetype = STRAIGHT;
 	dotted = option;
 }

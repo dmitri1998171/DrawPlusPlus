@@ -1,5 +1,5 @@
 #include "Variables.h"
-#include "Line.h"
+// #include "Line.h"
 #include "Figures.h"
 #include "Menu.h"
 
@@ -35,35 +35,11 @@ void drawEraser() {
 void renderScene(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
  
-	switch (figure) {
-		case LINE:
-			for (int i = 0; i < linesCounter.size(); i++) 
-				linesCounter[i]->drawLine();
-			
-			if(linetype == ERASER)
-				drawEraser();
-
-			break;
-
-		case TRIANGLE:
-			for (int i = 0; i < figureCounter.size(); i++)
-				figureCounter[i]->draw();
-
-			break;
-
-		case SQUARE:
-			for (int i = 0; i < figureCounter.size(); i++)
-				figureCounter[i]->draw();
-
-			break;
-
-		case CIRCLE:
-			for (int i = 0; i < figureCounter.size(); i++)
-				figureCounter[i]->draw();
-			
-			break;
-	}
+	for (int i = 0; i < figureCounter.size(); i++)
+		figureCounter[i]->draw();
 	
+	if(linetype == ERASER)
+		drawEraser();
 
 	glFlush();
 	glutPostRedisplay();
@@ -73,14 +49,12 @@ void mouseMove(int x, int y) {
 	X = x;
 	Y = y;
 
-	if(line)
-		line->changeCoord(x, y);
-
 	if(figureCounter.size())
 		figureCounter.back()->changeCoord(x, y);
 }
 
 void MouseFunc(int button, int state, int x, int y) {
+	LineFactory* line_factory = new LineFactory;
 	CircleFactory* circle_factory = new CircleFactory;
 	SquareFactory* square_factory = new SquareFactory;
 	TriangleFactory* triangle_factory = new TriangleFactory;
@@ -88,8 +62,7 @@ void MouseFunc(int button, int state, int x, int y) {
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		switch (figure) {
 			case LINE:
-				line = new Line(x, y);
-				linesCounter.push_back(line);
+				figureCounter.push_back(line_factory->createFigure(x, y));
 				break;
 
 			case TRIANGLE:

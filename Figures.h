@@ -3,13 +3,17 @@
 
 class Figure {
     protected:
-        int figureType;
+        int color;
+        int current_width;
         float red, green, blue;
         int start_x, start_y;
         vector<coord> coord;                // последовательность точек, из которых состоит фигура
 
     public:
-        Figure() : figureType(figure) {};
+        Figure() {};
+        virtual void draw() = 0;
+        virtual void destroy() = 0;
+
         void SetLineColor(int color) {
             if(color == BLACK) { red = 0; green = 0; blue = 0; }
             if(color == RED) { red = 1; green = 0; blue = 0; }
@@ -31,17 +35,134 @@ class Figure {
 
             coord.push_back(newCoord);
         }
-
-        virtual void draw() = 0;
 };
+
+// ------------------------------------------------------------------
+
+class Line : public Figure {
+    private:
+        int type;
+        int dottedLine;
+        int lineMirrorType;
+
+        void drawCurveLine(int color, int width);
+        void drawStraightLine();
+        void drawMirroredLine();
+        
+    public:
+        Line(int x, int y);
+        void draw();
+        void destroy();
+};
+
+Line::Line(int x, int y) {
+    color = lineColor;
+    type = linetype;
+    current_width = lineWidth;
+    dottedLine = dotted;
+    lineMirrorType = mirrorType;
+    changeCoord(x, y);
+}
+
+void Line::draw() {
+    switch (type) {
+        case LINE:
+            drawCurveLine(color, current_width);
+            break;
+
+        case STRAIGHT:
+            drawStraightLine();
+            break;
+
+        case ERASER:
+            drawCurveLine(bg_color, eraser_width);
+            break;
+
+        case MIRRORED:
+            drawMirroredLine();
+            break;
+    }
+}
+
+void Line::drawCurveLine(int color, int width) {
+    SetLineColor(color);
+    glLineWidth((GLfloat)width);                    // Меняем толщину линии
+    glBegin(GL_LINE_STRIP);                         // Рисуем линию
+
+    for (int i = 0; i < coord.size(); i++)
+        glVertex2f(coord[i].x, coord[i].y);
+
+    glEnd();
+}
+
+void Line::drawStraightLine() {
+    int size = coord.size() - 1;
+
+    SetLineColor(color);
+    glLineWidth((GLfloat)current_width);             // Меняем толщину линии
+
+    switch (dottedLine) {
+        case STRING:
+            glDisable(GL_LINE_STIPPLE); 
+            break;
+        case DOTTED:
+            glLineStipple(4, 0xAAAA);
+            glEnable(GL_LINE_STIPPLE); 
+            break;
+        case MIXED:
+            glLineStipple(3, 0x1C47);
+            glEnable(GL_LINE_STIPPLE); 
+            break;
+    }
+
+    glBegin(GL_LINES);                               // Рисуем линию
+        glVertex2f(coord[0].x, coord[0].y);
+        glVertex2f(coord[size].x, coord[size].y);
+    glEnd();
+    glDisable(GL_LINE_STIPPLE); 
+}
+
+void Line::drawMirroredLine() {
+    SetLineColor(color);
+    glLineWidth((GLfloat)current_width);            // Меняем толщину линии
+    glBegin(GL_LINE_STRIP);                         // Рисуем линию
+
+    for (int i = 0; i < coord.size(); i++)
+        glVertex2f(coord[i].x, coord[i].y);
+
+    glEnd();
+
+    glBegin(GL_LINE_STRIP);                         // Рисуем зеркальную линию
+
+    if(lineMirrorType == VERTICAL) {
+        for (int i = 0; i < coord.size(); i++) 
+            glVertex2f(HEIGHT - coord[i].x, coord[i].y);
+    }
+
+    if(lineMirrorType == HORIZONTAL) {
+        for (int i = 0; i < coord.size(); i++) 
+            glVertex2f(coord[i].x, WIDTH - coord[i].y);
+    }
+
+    glEnd();
+}
+
+void Line::destroy() {
+    delete this;
+}
+// ------------------------------------------------------------------
 
 class Circle : public Figure {
     public:
         Circle(int x, int y);
         void draw();
+        void destroy();
 };
 
 Circle::Circle(int x, int y) {
+    color = lineColor;
+    current_width = lineWidth;
+
     start_x = x;
     start_y = y;
 
@@ -49,8 +170,8 @@ Circle::Circle(int x, int y) {
 }
 
 void Circle::draw() {
-    SetLineColor(lineColor);
-    glLineWidth((GLfloat)lineWidth);                    // Меняем толщину линии
+    SetLineColor(color);
+    glLineWidth((GLfloat)current_width);                    // Меняем толщину линии
     
     glPushMatrix();
     glTranslatef(start_x, start_y, 0);
@@ -70,6 +191,12 @@ void Circle::draw() {
     glPopMatrix();
 }
 
+void Circle::destroy() {
+    delete this;
+}
+
+// ------------------------------------------------------------------
+
 class Square : public Figure {
     private:
         int square_size;
@@ -77,10 +204,14 @@ class Square : public Figure {
     public:
         Square(int x, int y);
         void draw();
+        void destroy();
 };
 
 Square::Square(int x, int y) {
+    color = lineColor;
+    current_width = lineWidth;
     square_size = 15;
+
     start_x = x;
     start_y = y;
 
@@ -88,8 +219,8 @@ Square::Square(int x, int y) {
 }
 
 void Square::draw() {
-    SetLineColor(lineColor);
-    glLineWidth((GLfloat)lineWidth);                    // Меняем толщину линии
+    SetLineColor(color);
+    glLineWidth((GLfloat)current_width);                    // Меняем толщину линии
     
     glPushMatrix();
     GLfloat radius = sqrt((pow((coord.back().x - start_x), 2)) + (pow((coord.back().y - start_y), 2)));
@@ -107,6 +238,12 @@ void Square::draw() {
     glPopMatrix();
 }
 
+void Square::destroy() {
+    delete this;
+}
+
+// ------------------------------------------------------------------
+
 class Triangle : public Figure {
     private:
         int triangle_size;
@@ -114,10 +251,14 @@ class Triangle : public Figure {
     public:
         Triangle(int x, int y);
         void draw();
+        void destroy();
 };
 
 Triangle::Triangle(int x, int y) {
+    color = lineColor;
+    current_width = lineWidth;
     triangle_size = 15;
+    
     start_x = x;
     start_y = y;
 
@@ -125,8 +266,8 @@ Triangle::Triangle(int x, int y) {
 }
 
 void Triangle::draw() {
-    SetLineColor(lineColor);
-    glLineWidth((GLfloat)lineWidth);                    // Меняем толщину линии
+    SetLineColor(color);
+    glLineWidth((GLfloat)current_width);                    // Меняем толщину линии
     
     glPushMatrix();
     GLfloat theta;
@@ -147,32 +288,41 @@ void Triangle::draw() {
     glPopMatrix();
 }
 
+void Triangle::destroy() {
+    delete this;
+}
 
 // ==================================================================
 
 class Factory {
-  public:    
-    virtual Figure* createFigure(int x, int y) = 0;
-    virtual ~Factory() {}
+    public:    
+        virtual Figure* createFigure(int x, int y) = 0;
 };
   
 class CircleFactory: public Factory {
-  public:    
-    Figure* createFigure(int x, int y) { 
-      return new Circle(x, y); 
-    }
+    public:    
+        Figure* createFigure(int x, int y) { 
+            return new Circle(x, y); 
+        }
 };
 
 class SquareFactory: public Factory {
-  public:    
-    Figure* createFigure(int x, int y) { 
-      return new Square(x, y); 
-    }
+    public:    
+        Figure* createFigure(int x, int y) { 
+            return new Square(x, y); 
+        }
 };
 
 class TriangleFactory: public Factory {
-  public:    
-    Figure* createFigure(int x, int y) { 
-      return new Triangle(x, y); 
-    }
+    public:    
+        Figure* createFigure(int x, int y) { 
+            return new Triangle(x, y); 
+        }
+};
+
+class LineFactory: public Factory {
+    public:
+        Figure* createFigure(int x, int y) { 
+            return new Line(x, y); 
+        }
 };
