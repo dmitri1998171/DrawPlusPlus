@@ -84,7 +84,7 @@ void processBGColorMenu(int option) {
 }
 
 void processFiguresMenu(int option) {
-
+	figure = option;
 }
 
 void processlineTypeMenu(int option) {

@@ -64,7 +64,7 @@ int bg_color = WHITE;
 int eraser_width = LARGE;
 int dotted = STRING;
 int mirrorType = VERTICAL;
-int figure = SQUARE;
+int figure = TRIANGLE;
 
 typedef struct Coord {
     int x;

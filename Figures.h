@@ -72,7 +72,7 @@ void Circle::draw() {
 
 class Square : public Figure {
     private:
-        int square_width;
+        int square_size;
 
     public:
         Square(int x, int y);
@@ -80,7 +80,7 @@ class Square : public Figure {
 };
 
 Square::Square(int x, int y) {
-    square_width = 15;
+    square_size = 15;
     start_x = x;
     start_y = y;
 
@@ -98,14 +98,55 @@ void Square::draw() {
     glScalef(radius, radius, 0);
 
     glBegin(GL_LINE_LOOP);                      	// Рисуем квадрат
-        glVertex2f(-square_width, -square_width);
-        glVertex2f(-square_width,  square_width);
-        glVertex2f( square_width,  square_width);
-        glVertex2f( square_width, -square_width);
+        glVertex2f(-square_size, -square_size);
+        glVertex2f(-square_size,  square_size);
+        glVertex2f( square_size,  square_size);
+        glVertex2f( square_size, -square_size);
     glEnd();
 
     glPopMatrix();
 }
+
+class Triangle : public Figure {
+    private:
+        int triangle_size;
+
+    public:
+        Triangle(int x, int y);
+        void draw();
+};
+
+Triangle::Triangle(int x, int y) {
+    triangle_size = 15;
+    start_x = x;
+    start_y = y;
+
+    changeCoord(x, y);
+}
+
+void Triangle::draw() {
+    SetLineColor(lineColor);
+    glLineWidth((GLfloat)lineWidth);                    // Меняем толщину линии
+    
+    glPushMatrix();
+    GLfloat theta;
+    GLfloat pi = acos(-1.0);
+    GLfloat radius = sqrt((pow((coord.back().x - start_x), 2)) + (pow((coord.back().y - start_y), 2)));
+
+    glTranslatef(start_x, start_y, 0);
+    glScalef(radius, radius, 0);
+    glRotatef(30, 0, 0, 1);
+
+    glBegin(GL_LINE_LOOP);                      	// Рисуем треугольник
+        for(GLfloat a = 0.0f; a < 360.0f; a += 120) {
+        theta = 2.0f * pi * a / 180.0f;
+        glVertex2f(radius * cos(theta), radius* sin(theta));
+    }
+        
+    glEnd();
+    glPopMatrix();
+}
+
 
 // ==================================================================
 
@@ -126,5 +167,12 @@ class SquareFactory: public Factory {
   public:    
     Figure* createFigure(int x, int y) { 
       return new Square(x, y); 
+    }
+};
+
+class TriangleFactory: public Factory {
+  public:    
+    Figure* createFigure(int x, int y) { 
+      return new Triangle(x, y); 
     }
 };
