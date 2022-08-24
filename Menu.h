@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Variables.h"
  
 #define SHRINK 1
@@ -7,11 +6,14 @@
 
 #define CLEAR 1
 
+Figure* _figure;
+vector<Figure*> figureCounter;
+
 Line* line;
 vector<Line*> linesCounter;		// учет созданных линий
 
 // идентификаторы меню
-int widthMenu, dottedMenu, mainMenu, colorMenu, BGcolorMenu, lineTypeMenu, eraserWidthMenu, mirroredLineMenu;
+int widthMenu, dottedMenu, mainMenu, colorMenu, BGcolorMenu, FiguresMenu, lineTypeMenu, eraserWidthMenu, mirroredLineMenu;
 int menuFlag = 0;           	// статус меню
 
 void changeBgcolorFunc(float r, float g, float b, int new_bg_color) {
@@ -81,6 +83,10 @@ void processBGColorMenu(int option) {
 	}
 }
 
+void processFiguresMenu(int option) {
+
+}
+
 void processlineTypeMenu(int option) {
     linetype = option;
 }
@@ -136,9 +142,14 @@ void createPopupMenus() {
 	glutAddMenuEntry("Vertical", VERTICAL);
 	glutAddMenuEntry("Horizontal", HORIZONTAL);
 	// glutAddMenuEntry("LARGE", LARGE);
+
+	FiguresMenu = glutCreateMenu(processFiguresMenu);
+	glutAddMenuEntry("Triangle", TRIANGLE);
+	glutAddMenuEntry("Square", SQUARE);
+	glutAddMenuEntry("Circle", CIRCLE);
 	
 	lineTypeMenu = glutCreateMenu(processlineTypeMenu);
-	glutAddMenuEntry("Line", LINE);
+	glutAddMenuEntry("Line", CURVE);
 	glutAddMenuEntry("Straight line", STRAIGHT);
     glutAddSubMenu("Eraser", eraserWidthMenu);
     glutAddSubMenu("Mirrored line", mirroredLineMenu);
@@ -154,6 +165,7 @@ void createPopupMenus() {
 	glutAddSubMenu("Width", widthMenu);
 	glutAddSubMenu("Line Color", colorMenu);
 	glutAddSubMenu("Background Color", BGcolorMenu);
+	glutAddSubMenu("Figures", FiguresMenu);
     glutAddSubMenu("Line type", lineTypeMenu);
     glutAddSubMenu("Dotted", dottedMenu);
 	glutAddMenuEntry("Clear", CLEAR);

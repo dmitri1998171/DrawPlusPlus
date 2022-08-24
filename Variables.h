@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include <cmath>
 
 #define WIDTH 500
 #define HEIGHT 500
@@ -26,7 +27,7 @@ enum COLORS {
 };
 
 enum LINE_TYPES {
-    LINE = 0,
+    CURVE = 0,
     STRAIGHT,
     ERASER, 
     MIRRORED
@@ -49,6 +50,13 @@ enum MIRROR_TYPE {
     HORIZONTAL
 };
 
+enum FIGURES {
+    LINE = 0,
+    TRIANGLE,
+    SQUARE,
+    CIRCLE
+};
+
 int linetype = MIRRORED;
 int lineColor = BLACK;
 int lineWidth = 2;
@@ -56,6 +64,7 @@ int bg_color = WHITE;
 int eraser_width = LARGE;
 int dotted = STRING;
 int mirrorType = VERTICAL;
+int figure = CIRCLE;
 
 typedef struct Coord {
     int x;

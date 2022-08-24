@@ -1,5 +1,6 @@
 #include "Variables.h"
 #include "Line.h"
+#include "Figures.h"
 #include "Menu.h"
 
 int X, Y;
@@ -34,11 +35,31 @@ void drawEraser() {
 void renderScene(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
  
-	for (int i = 0; i < linesCounter.size(); i++) 
-		linesCounter[i]->drawLine();
+	switch (figure) {
+		case LINE:
+			for (int i = 0; i < linesCounter.size(); i++) 
+				linesCounter[i]->drawLine();
+			
+			if(linetype == ERASER)
+				drawEraser();
+
+			break;
+
+		case TRIANGLE:
+		
+			break;
+
+		case SQUARE:
+
+			break;
+
+		case CIRCLE:
+			for (int i = 0; i < figureCounter.size(); i++)
+				figureCounter[i]->draw();
+			
+			break;
+	}
 	
-	if(linetype == ERASER)
-		drawEraser();
 
 	glFlush();
 	glutPostRedisplay();
@@ -48,13 +69,37 @@ void mouseMove(int x, int y) {
 	X = x;
 	Y = y;
 
-	line->changeCoord(x, y);
+	if(line)
+		line->changeCoord(x, y);
+
+	if(figureCounter.size())
+		figureCounter.back()->changeCoord(x, y);
 }
 
 void MouseFunc(int button, int state, int x, int y) {
+	CircleFactory* circle_factory = new CircleFactory;
+
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		line = new Line(x, y);
-		linesCounter.push_back(line);
+		switch (figure) {
+			case LINE:
+				line = new Line(x, y);
+				linesCounter.push_back(line);
+				break;
+
+			case TRIANGLE:
+				// _figure = new Circle(x, y);
+				// linesCounter.push_back(line);
+				break;
+
+			case SQUARE:
+				line = new Line(x, y);
+				linesCounter.push_back(line);
+				break;
+
+			case CIRCLE:
+				figureCounter.push_back(circle_factory->createFigure(x, y));
+				break;
+		}
 	}
 }
 
